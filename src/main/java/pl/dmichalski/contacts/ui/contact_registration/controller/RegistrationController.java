@@ -2,7 +2,7 @@ package pl.dmichalski.contacts.ui.contact_registration.controller;
 
 import pl.dmichalski.contacts.dao.ContactDao;
 import pl.dmichalski.contacts.model.Contact;
-import pl.dmichalski.contacts.ui.contact_registration.models.ContactTableModel;
+import pl.dmichalski.contacts.ui.contact_registration.model.ContactTableModel;
 import pl.dmichalski.contacts.ui.contact_registration.view.RegistrationFrame;
 import pl.dmichalski.contacts.ui.contact_registration.view.contact_data.DataButtonPanel;
 import pl.dmichalski.contacts.ui.contact_registration.view.contact_data.FormPanel;
@@ -13,8 +13,14 @@ import pl.dmichalski.contacts.utils.Const;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class RegistrationController {
@@ -54,9 +60,13 @@ public class RegistrationController {
         searchBtn.addActionListener(new OnSearchClickListener());
         deleteBtn.addActionListener(new OnDeleteClickListener());
         contactTable.getSelectionModel().addListSelectionListener(new OnContactRowClickListener());
+        registrationFrame.addWindowListener(new OnWindowCloseListener());
+
+        readXmlFile();
     }
 
     class OnSaveClickListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             int selectedRowIndex = contactTable.getSelectedRow();
@@ -88,15 +98,15 @@ public class RegistrationController {
             }
         }
     }
-
     class OnClearClickListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             leftFormPanel.clearForm();
         }
     }
-
     private class OnSearchClickListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             StringTokenizer tokenizer = new StringTokenizer(searchTF.getText());
@@ -119,8 +129,8 @@ public class RegistrationController {
             }
         }
     }
-
     private class OnDeleteClickListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             int numOfRow = contactTable.getSelectedRow();
@@ -139,6 +149,47 @@ public class RegistrationController {
 
         }
     }
+    private class OnWindowCloseListener extends WindowAdapter {
+
+        @Override
+        public void windowClosing(WindowEvent event) {
+            UIManager.put("OptionPane.yesButtonText", "Tak");
+            UIManager.put("OptionPane.noButtonText", "Nie");
+
+            int confirm = JOptionPane.showConfirmDialog(
+                    null,
+                    Const.Strings.SAVE_CONFIRMATION,
+                    Const.Strings.INFORMATION,
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                saveChanges();
+            }
+        }
+
+        private void saveChanges() {
+            try {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("Xml files (*.xml)", "xml");
+                fileChooser.setFileFilter(xmlFilter);
+                int result = fileChooser.showSaveDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    String pathToFile = fileChooser.getSelectedFile().getAbsolutePath() + ".xml";
+                    Path selectedFile = Paths.get(pathToFile);
+                    List<Contact> contacts = contactTableModel.getContacts();
+                    contactDao.saveAllContacts(contacts, selectedFile);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        Const.Strings.FILE_WRITE_ERROR + e.getMessage(),
+                        Const.Strings.ERROR,
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+    }
 
     private class OnContactRowClickListener implements ListSelectionListener {
 
@@ -150,6 +201,44 @@ public class RegistrationController {
                 leftFormPanel.fillForm(contact);
             }
 
+        }
+
+    }
+
+    private void readXmlFile() {
+        UIManager.put("OptionPane.yesButtonText", "Tak");
+        UIManager.put("OptionPane.noButtonText", "Nie");
+
+        int confirm = JOptionPane.showConfirmDialog(
+                null,
+                Const.Strings.READ_CONFIRMATION,
+                Const.Strings.INFORMATION,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            readContacts();
+        }
+    }
+
+    private void readContacts() {
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("Xml files (*.xml)", "xml");
+            fileChooser.setFileFilter(xmlFilter);
+            int result = fileChooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                Path selectedFile = Paths.get(fileChooser.getSelectedFile().toURI());
+                List<Contact> contacts = contactDao.getAllContacts(selectedFile);
+                contactTableModel.addContacts(contacts);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    Const.Strings.FILE_OPEN_ERROR + e.getMessage(),
+                    Const.Strings.ERROR,
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 

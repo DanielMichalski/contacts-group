@@ -1,11 +1,15 @@
 package pl.dmichalski.contacts.model;
 
+
 /**
  * Author: Daniel
  */
 public class BusinessContact extends Contact {
 
     private ContactType contactType = ContactType.BUSINESS;
+
+    public BusinessContact() {
+    }
 
     public BusinessContact(String name, String surname, String phoneNumber, String address) {
         super(name, surname, phoneNumber, address);

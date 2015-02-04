@@ -37,7 +37,12 @@ public class Const {
         String NAME_REQUIRED = "Musisz podać imię i nazwisko żeby móc wyszukać kontakt";
         String ROW_DELETE_REQUIRED = "Musisz wybrać wiersz który chcesz usunąć";
         String INFORMATION = "Informacja";
+        String ERROR = "Błąd";
         String FIELDS_REQUIRED = "Wypełnij wszystkie dane";
+        String FILE_WRITE_ERROR = "Wystąpił błąd podczas zapisu pliku ";
+        String FILE_OPEN_ERROR = "Wystąpił błąd podczas odczytu pliku ";
+        String READ_CONFIRMATION = "Czy chcesz wczytać plik z kontaktami?";
+        String SAVE_CONFIRMATION = "Czy chcesz zapisać zmiany?";
     }
 
     public static interface TableColumns {

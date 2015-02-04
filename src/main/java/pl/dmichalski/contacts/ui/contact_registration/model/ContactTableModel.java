@@ -1,4 +1,4 @@
-package pl.dmichalski.contacts.ui.contact_registration.models;
+package pl.dmichalski.contacts.ui.contact_registration.model;
 
 
 import pl.dmichalski.contacts.model.Contact;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ContactTableModel extends AbstractTableModel {
 
@@ -49,6 +50,14 @@ public class ContactTableModel extends AbstractTableModel {
         contacts.add(contact);
         sortContacts();
         refilter();
+    }
+
+    public void addContacts(List<Contact> contacts) {
+        for (Contact contact : contacts) {
+            this.contacts.add(contact);
+            sortContacts();
+            refilter();
+        }
     }
 
     public void sortContacts() {
@@ -104,17 +113,16 @@ public class ContactTableModel extends AbstractTableModel {
 
     private void refilter() {
         filteredContacts.clear();
-        for (Contact contact : contacts)
-            filteredContacts.add(contact);
+        filteredContacts.addAll(contacts.stream().collect(Collectors.toList()));
         fireTableDataChanged();
     }
 
-    public void refilter(String imie, String nazwisko) {
+    public void refilter(String name, String surname) {
         filteredContacts.clear();
 
         for (Contact contact : contacts) {
-            if (contact.getName().toLowerCase().contains(imie.toLowerCase())
-                    || contact.getName().toLowerCase().contains(nazwisko.toLowerCase()))
+            if (contact.getName().toLowerCase().contains(name.toLowerCase())
+                    || contact.getName().toLowerCase().contains(surname.toLowerCase()))
                 filteredContacts.add(contact);
         }
 
@@ -123,8 +131,12 @@ public class ContactTableModel extends AbstractTableModel {
 
     public void resetFilter() {
         filteredContacts.clear();
-        for (Contact contact : contacts)
-            filteredContacts.add(contact);
+        filteredContacts.addAll(contacts.stream().collect(Collectors.toList()));
         fireTableDataChanged();
     }
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+
 }

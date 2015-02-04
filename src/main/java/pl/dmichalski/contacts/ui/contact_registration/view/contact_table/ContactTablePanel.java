@@ -3,11 +3,11 @@ package pl.dmichalski.contacts.ui.contact_registration.view.contact_table;
 import pl.dmichalski.contacts.model.BusinessContact;
 import pl.dmichalski.contacts.model.Contact;
 import pl.dmichalski.contacts.model.PrivateContact;
-import pl.dmichalski.contacts.ui.contact_registration.models.ContactTableModel;
+import pl.dmichalski.contacts.ui.contact_registration.model.ContactTableModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactTablePanel extends JPanel {
@@ -29,13 +29,7 @@ public class ContactTablePanel extends JPanel {
     }
 
     private void initComponents() {
-        //TODO read from xml
-        List<Contact> contacts = new ArrayList<>();
-        contacts.add(new BusinessContact("Jan", "Kowalski", "7484739283", "ul. Długa 22 Łódź"));
-        contacts.add(new PrivateContact("Tomasz", "Malinowski", "604733234", "ul. Długa 12 Warszawa"));
-        contacts.add(new BusinessContact("Anna", "Tomaszewska", "504930223", "ul. Bananowa 12 Poznań"));
-
-        contactTable = new JTable(new ContactTableModel(contacts));
+        contactTable = new JTable(new ContactTableModel(null));
         contactTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         ListSelectionModel listSelectionModel = contactTable.getSelectionModel();

@@ -15,6 +15,9 @@ public abstract class Contact {
 
     private String address;
 
+    public Contact() {
+    }
+
     public Contact(String name, String surname, String phoneNumber, String address) {
         this.name = name;
         this.surname = surname;

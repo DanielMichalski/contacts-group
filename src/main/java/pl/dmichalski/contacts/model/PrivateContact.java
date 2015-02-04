@@ -7,6 +7,9 @@ public class PrivateContact extends Contact {
 
     private ContactType contactType = ContactType.PRIVATE;
 
+    public PrivateContact() {
+    }
+
     public PrivateContact(String name, String surname, String phoneNumber, String address) {
         super(name, surname, phoneNumber, address);
     }

@@ -1,8 +1,10 @@
 package pl.dmichalski.contacts.dao;
 
 import pl.dmichalski.contacts.model.Contact;
+import pl.dmichalski.contacts.xml.XmlFileWriter;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -10,16 +12,23 @@ import java.util.List;
  */
 public class ContactDao {
 
+    private XmlFileWriter xmlFileWriter;
+
+    public ContactDao() {
+        this.xmlFileWriter = new XmlFileWriter();
+    }
+
+    public List<Contact> getAllContacts(Path path) throws Exception {
+        return xmlFileWriter.readContractsFromFile(path);
+    }
+
+    public void saveAllContacts(List<Contact> contacts, Path path) throws Exception {
+        xmlFileWriter.writeContactsIntoFile(contacts, path);
+    }
+
+
     public void updateContact(int contactId, Contact contactFromFields) {
         System.out.println("Updating contact");
-    }
-
-    public List<Contact> getAllContacts() {
-        return new ArrayList<>();
-    }
-
-    public void saveAllContacts() {
-        System.out.println("Saving contacts");
     }
 
     public void saveContact(Contact contact) {
