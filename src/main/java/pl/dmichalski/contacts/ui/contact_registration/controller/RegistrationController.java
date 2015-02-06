@@ -17,10 +17,7 @@ import pl.dmichalski.contacts.utils.Const;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -55,7 +52,6 @@ public class RegistrationController {
 
         JButton saveBtn = leftBtnPanel.getSaveBtn();
         JButton clearBtn = leftBtnPanel.getCancelBtn();
-        JButton searchBtn = contactTablePanel.getContactSearchPanel().getSearchBtn();
         JButton deleteBtn = contactTablePanel.getBtnPanel().getDeleteContactBtn();
 
         this.searchTF = searchRightPanel.getSearchTF();
@@ -65,10 +61,10 @@ public class RegistrationController {
 
         saveBtn.addActionListener(new OnSaveClickListener());
         clearBtn.addActionListener(new OnClearClickListener());
-        searchBtn.addActionListener(new OnSearchClickListener());
         deleteBtn.addActionListener(new OnDeleteClickListener());
         contactTable.getSelectionModel().addListSelectionListener(new OnContactRowClickListener());
         registrationFrame.addWindowListener(new OnWindowCloseListener());
+        searchTF.addKeyListener(new OnEnterTypedInTextFieldListener());
 
         initGroupComboBox();
         initContactsInTable();
@@ -133,31 +129,6 @@ public class RegistrationController {
         }
     }
 
-    private class OnSearchClickListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            StringTokenizer tokenizer = new StringTokenizer(searchTF.getText());
-            if (searchTF.getText().equals("")) {
-                contactTableModel.resetFilter();
-                contactTableModel.sortContacts();
-            } else if (tokenizer.countTokens() == 1) {
-                String token = tokenizer.nextToken();
-                contactTableModel.refilter(token, token);
-            } else if (tokenizer.countTokens() == 2) {
-                String name = tokenizer.nextToken();
-                String surname = tokenizer.nextToken();
-                contactTableModel.refilter(name, surname);
-            } else {
-                JOptionPane.showMessageDialog(
-                        null,
-                        Const.Strings.NAME_REQUIRED,
-                        Const.Strings.INFORMATION,
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-    }
-
     private class OnDeleteClickListener implements ActionListener {
 
         @Override
@@ -207,7 +178,35 @@ public class RegistrationController {
                 leftFormPanel.fillForm(contact);
             }
         }
+    }
 
+    private class OnEnterTypedInTextFieldListener extends KeyAdapter {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            searchContacts();
+        }
+    }
+
+    private void searchContacts() {
+        String text = searchTF.getText().replaceAll("[*]", "");
+        StringTokenizer tokenizer = new StringTokenizer(text);
+        if (text.equals("")) {
+            contactTableModel.resetFilter();
+            contactTableModel.sortContacts();
+        } else if (tokenizer.countTokens() == 1) {
+            String token = tokenizer.nextToken();
+            contactTableModel.refilter(token, token);
+        } else if (tokenizer.countTokens() == 2) {
+            String name = tokenizer.nextToken();
+            String surname = tokenizer.nextToken();
+            contactTableModel.refilter(name, surname);
+        } else {
+            JOptionPane.showMessageDialog(
+                    null,
+                    Const.Strings.NAME_REQUIRED,
+                    Const.Strings.INFORMATION,
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
 }

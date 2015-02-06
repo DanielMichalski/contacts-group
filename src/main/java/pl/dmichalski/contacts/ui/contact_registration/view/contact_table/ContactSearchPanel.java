@@ -10,8 +10,6 @@ public class ContactSearchPanel extends JPanel {
 
     private JTextField searchTF;
 
-    private JButton searchBtn;
-
     public ContactSearchPanel() {
         initComponents();
     }
@@ -23,17 +21,10 @@ public class ContactSearchPanel extends JPanel {
         searchTF = new JTextField();
         searchTF.setPreferredSize(new Dimension(220, 22));
         add(searchTF);
-
-        searchBtn = new JButton(Const.Labels.FIND);
-        add(searchBtn);
     }
 
     public JTextField getSearchTF() {
         return searchTF;
-    }
-
-    public JButton getSearchBtn() {
-        return searchBtn;
     }
 
 }

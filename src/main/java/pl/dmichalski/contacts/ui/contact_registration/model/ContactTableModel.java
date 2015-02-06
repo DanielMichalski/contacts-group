@@ -125,7 +125,7 @@ public class ContactTableModel extends AbstractTableModel {
 
         for (Contact contact : contacts) {
             if (contact.getName().toLowerCase().contains(name.toLowerCase())
-                    || contact.getName().toLowerCase().contains(surname.toLowerCase()))
+                    || contact.getSurname().toLowerCase().contains(surname.toLowerCase()))
                 filteredContacts.add(contact);
         }
 
