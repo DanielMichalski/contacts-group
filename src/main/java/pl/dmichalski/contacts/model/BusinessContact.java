@@ -21,8 +21,6 @@ public class BusinessContact extends Contact {
 
     @Override
     public String toString() {
-        return "BusinessContact{" +
-                "contactType=" + contactType +
-                "} " + super.toString();
+        return getName() + " " + getSurname() + " " + getPhoneNumber();
     }
 }

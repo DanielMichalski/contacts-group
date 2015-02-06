@@ -8,6 +8,8 @@ import java.util.List;
  */
 public class ContactGroup {
 
+    private String name;
+
     private List<Contact> contacts = new ArrayList<>();
 
     public void addContact(Contact contact) {
@@ -22,10 +24,16 @@ public class ContactGroup {
         this.contacts = contacts;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return "ContactGroup{" +
-                "contacts=" + contacts +
-                '}';
+        return name;
     }
 }

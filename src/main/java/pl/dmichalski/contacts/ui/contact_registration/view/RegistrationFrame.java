@@ -9,7 +9,7 @@ import pl.dmichalski.contacts.utils.Utils;
 import javax.swing.*;
 import java.awt.*;
 
-public class RegistrationFrame extends JFrame {
+public class RegistrationFrame extends JDialog {
 
     private ContactRegisterLeftPanel contactRegisterLeftPanel;
 
@@ -25,7 +25,8 @@ public class RegistrationFrame extends JFrame {
     }
 
     private void setUpFrame() {
-        setTitle(Const.TitleFramesAndDlgs.CONTACT_FRAME);
+        setModal(true);
+        setTitle(Const.TitleFramesAndDlgs.CONTACT_REGISTRATION_FRAME);
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setLocationRelativeTo(null);
         setResizable(false);

@@ -3,13 +3,18 @@ package pl.dmichalski.contacts.utils;
 public class Const {
 
     public static interface TitleFramesAndDlgs {
-        String CONTACT_FRAME = "Zarządzanie kontaktami";
+        String CONTACT_REGISTRATION_FRAME = "Zarządzanie kontaktami";
+        String SHOW_CONTACT_FRAME = "Kontakty";
+        String GROUP_FRAME = "Dodaj grupę";
     }
 
     public static interface ButtonLbls {
         String BTN_SAVE = "Zapisz";
         String BTN_CANCEL = "Wyczyść";
         String BTN_DELETE = "Usuń";
+        String BTN_CONTACTS = "Kontakty";
+        String BTN_GROUPS = "Grupy";
+        String BTN_ADD = "Dodaj";
     }
 
     public static interface Labels {
@@ -23,6 +28,9 @@ public class Const {
         String BUSINESS = "Biznesowy";
         String NAME_AND_SURNAME = "Imię i nazwisko";
         String FIND = "Szukaj";
+        String CONTACTS = "Kontakty";
+        String DEFAULT_CONTACT_GROUP = "Pozostałe";
+        String GROUP = "Nazwa grupy";
     }
 
     public static interface Menu {
@@ -43,6 +51,8 @@ public class Const {
         String FILE_OPEN_ERROR = "Wystąpił błąd podczas odczytu pliku ";
         String READ_CONFIRMATION = "Czy chcesz wczytać plik z kontaktami?";
         String SAVE_CONFIRMATION = "Czy chcesz zapisać zmiany?";
+        String GROUP_EXIST = "Grupa o podanej nazwie już istnieje";
+        String GROUP_NAME_REQUIRED = "Podaj nazwe grupy";
     }
 
     public static interface TableColumns {

@@ -20,9 +20,7 @@ public class PrivateContact extends Contact {
 
     @Override
     public String toString() {
-        return "PrivateContact{" +
-                "contactType=" + contactType +
-                "} " + super.toString();
+        return getName() + " " + getSurname() + " " + getPhoneNumber();
     }
 
 }

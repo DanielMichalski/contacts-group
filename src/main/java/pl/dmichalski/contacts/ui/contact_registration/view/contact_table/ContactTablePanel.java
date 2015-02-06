@@ -1,14 +1,9 @@
 package pl.dmichalski.contacts.ui.contact_registration.view.contact_table;
 
-import pl.dmichalski.contacts.model.BusinessContact;
-import pl.dmichalski.contacts.model.Contact;
-import pl.dmichalski.contacts.model.PrivateContact;
 import pl.dmichalski.contacts.ui.contact_registration.model.ContactTableModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContactTablePanel extends JPanel {
 

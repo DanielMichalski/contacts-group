@@ -1,9 +1,9 @@
 package pl.dmichalski.contacts.dao;
 
 import pl.dmichalski.contacts.model.Contact;
+import pl.dmichalski.contacts.model.ContactGroup;
 import pl.dmichalski.contacts.xml.XmlFileWriter;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -18,11 +18,11 @@ public class ContactDao {
         this.xmlFileWriter = new XmlFileWriter();
     }
 
-    public List<Contact> getAllContacts(Path path) throws Exception {
+    public List<ContactGroup> getAllContacts(Path path) throws Exception {
         return xmlFileWriter.readContractsFromFile(path);
     }
 
-    public void saveAllContacts(List<Contact> contacts, Path path) throws Exception {
+    public void saveAllContacts(List<ContactGroup> contacts, Path path) throws Exception {
         xmlFileWriter.writeContactsIntoFile(contacts, path);
     }
 

@@ -61,8 +61,6 @@ public class RegistrationController {
         deleteBtn.addActionListener(new OnDeleteClickListener());
         contactTable.getSelectionModel().addListSelectionListener(new OnContactRowClickListener());
         registrationFrame.addWindowListener(new OnWindowCloseListener());
-
-        readXmlFile();
     }
 
     class OnSaveClickListener implements ActionListener {
@@ -98,6 +96,7 @@ public class RegistrationController {
             }
         }
     }
+
     class OnClearClickListener implements ActionListener {
 
         @Override
@@ -105,6 +104,7 @@ public class RegistrationController {
             leftFormPanel.clearForm();
         }
     }
+
     private class OnSearchClickListener implements ActionListener {
 
         @Override
@@ -129,6 +129,7 @@ public class RegistrationController {
             }
         }
     }
+
     private class OnDeleteClickListener implements ActionListener {
 
         @Override
@@ -149,6 +150,7 @@ public class RegistrationController {
 
         }
     }
+
     private class OnWindowCloseListener extends WindowAdapter {
 
         @Override
@@ -178,7 +180,7 @@ public class RegistrationController {
                     String pathToFile = fileChooser.getSelectedFile().getAbsolutePath() + ".xml";
                     Path selectedFile = Paths.get(pathToFile);
                     List<Contact> contacts = contactTableModel.getContacts();
-                    contactDao.saveAllContacts(contacts, selectedFile);
+//                    contactDao.saveAllContacts(contacts, selectedFile);
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(
@@ -203,43 +205,6 @@ public class RegistrationController {
 
         }
 
-    }
-
-    private void readXmlFile() {
-        UIManager.put("OptionPane.yesButtonText", "Tak");
-        UIManager.put("OptionPane.noButtonText", "Nie");
-
-        int confirm = JOptionPane.showConfirmDialog(
-                null,
-                Const.Strings.READ_CONFIRMATION,
-                Const.Strings.INFORMATION,
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.INFORMATION_MESSAGE);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            readContacts();
-        }
-    }
-
-    private void readContacts() {
-        try {
-            JFileChooser fileChooser = new JFileChooser();
-            FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("Xml files (*.xml)", "xml");
-            fileChooser.setFileFilter(xmlFilter);
-            int result = fileChooser.showOpenDialog(null);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                Path selectedFile = Paths.get(fileChooser.getSelectedFile().toURI());
-                List<Contact> contacts = contactDao.getAllContacts(selectedFile);
-                contactTableModel.addContacts(contacts);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    Const.Strings.FILE_OPEN_ERROR + e.getMessage(),
-                    Const.Strings.ERROR,
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
     }
 
 }
