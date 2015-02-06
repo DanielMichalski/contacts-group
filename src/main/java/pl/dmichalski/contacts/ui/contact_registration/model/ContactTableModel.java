@@ -17,7 +17,8 @@ public class ContactTableModel extends AbstractTableModel {
             Const.TableColumns.NAME_AND_SURNAME,
             Const.TableColumns.PHONE_NUMBER,
             Const.TableColumns.TYPE,
-            Const.TableColumns.ADDRESS};
+            Const.TableColumns.ADDRESS,
+            Const.TableColumns.GROUP_NAME};
 
     private List<Contact> contacts;
 
@@ -87,6 +88,8 @@ public class ContactTableModel extends AbstractTableModel {
                 return contact.getContactType();
             case 3:
                 return contact.getAddress();
+            case 4:
+                return contact.getGroupName();
             default:
                 return "";
         }

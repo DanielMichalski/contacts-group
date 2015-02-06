@@ -1,9 +1,6 @@
 package pl.dmichalski.contacts.ui.contact_registration.view.contact_data;
 
-import pl.dmichalski.contacts.model.BusinessContact;
-import pl.dmichalski.contacts.model.Contact;
-import pl.dmichalski.contacts.model.ContactType;
-import pl.dmichalski.contacts.model.PrivateContact;
+import pl.dmichalski.contacts.model.*;
 import pl.dmichalski.contacts.utils.Const;
 
 import javax.swing.*;
@@ -24,13 +21,15 @@ public class FormPanel extends JPanel {
 
     private JTextField addressTF;
 
+    private JComboBox<ContactGroup> groupComboBox;
+
     public FormPanel() {
         setUpPanel();
         initComponents();
     }
 
     private void setUpPanel() {
-        GridLayout layout = new GridLayout(6, 2);
+        GridLayout layout = new GridLayout(7, 2);
         layout.setVgap(15);
         setLayout(layout);
         setBorder(new TitledBorder(Const.Labels.CONTACT_FORM));
@@ -62,6 +61,9 @@ public class FormPanel extends JPanel {
         JLabel addressLbl = new JLabel(Const.Labels.ADDRESS);
         addressTF = new JTextField();
 
+        JLabel groupLbl = new JLabel(Const.Labels.GROUP);
+        groupComboBox = new JComboBox();
+
         add(nameLbl);
         add(nameTF);
 
@@ -76,6 +78,9 @@ public class FormPanel extends JPanel {
 
         add(addressLbl);
         add(addressTF);
+
+        add(groupLbl);
+        add(groupComboBox);
     }
 
     public Contact getContactFromFields() {
@@ -85,13 +90,15 @@ public class FormPanel extends JPanel {
                         nameTF.getText(),
                         surnameTF.getText(),
                         phoneNumberTF.getText(),
-                        addressTF.getText());
+                        addressTF.getText(),
+                        groupComboBox.getSelectedItem().toString());
             case BUSINESS:
                 return new BusinessContact(
                         nameTF.getText(),
                         surnameTF.getText(),
                         phoneNumberTF.getText(),
-                        addressTF.getText());
+                        addressTF.getText(),
+                        groupComboBox.getSelectedItem().toString());
             default:
                 return null;
         }
@@ -110,6 +117,7 @@ public class FormPanel extends JPanel {
         privateContactTypeRB.setSelected(true);
         phoneNumberTF.setText("");
         addressTF.setText("");
+        groupComboBox.setSelectedIndex(0);
     }
 
     public void fillForm(Contact contact) {
@@ -122,53 +130,30 @@ public class FormPanel extends JPanel {
         }
         phoneNumberTF.setText(contact.getPhoneNumber());
         addressTF.setText(contact.getAddress());
+        ContactGroup contactGroup = new ContactGroup();
+        contactGroup.setName(contact.getGroupName());
+        groupComboBox.setSelectedItem(contactGroup);
     }
 
     public JTextField getNameTF() {
         return nameTF;
     }
 
-    public void setNameTF(JTextField nameTF) {
-        this.nameTF = nameTF;
-    }
 
     public JTextField getSurnameTF() {
         return surnameTF;
     }
 
-    public void setSurnameTF(JTextField surnameTF) {
-        this.surnameTF = surnameTF;
-    }
-
-    public JRadioButton getPrivateContactTypeRB() {
-        return privateContactTypeRB;
-    }
-
-    public void setPrivateContactTypeRB(JRadioButton privateContactTypeRB) {
-        this.privateContactTypeRB = privateContactTypeRB;
-    }
-
-    public JRadioButton getBusinessContactTypeRB() {
-        return businessContactTypeRB;
-    }
-
-    public void setBusinessContactTypeRB(JRadioButton businessContactTypeRB) {
-        this.businessContactTypeRB = businessContactTypeRB;
-    }
 
     public JTextField getPhoneNumberTF() {
         return phoneNumberTF;
-    }
-
-    public void setPhoneNumberTF(JTextField phoneNumberTF) {
-        this.phoneNumberTF = phoneNumberTF;
     }
 
     public JTextField getAddressTF() {
         return addressTF;
     }
 
-    public void setAddressTF(JTextField addressTF) {
-        this.addressTF = addressTF;
+    public JComboBox<ContactGroup> getGroupComboBox() {
+        return groupComboBox;
     }
 }

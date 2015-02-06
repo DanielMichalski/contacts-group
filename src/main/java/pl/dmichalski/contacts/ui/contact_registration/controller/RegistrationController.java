@@ -2,24 +2,25 @@ package pl.dmichalski.contacts.ui.contact_registration.controller;
 
 import pl.dmichalski.contacts.dao.ContactDao;
 import pl.dmichalski.contacts.model.Contact;
+import pl.dmichalski.contacts.model.ContactGroup;
+import pl.dmichalski.contacts.provider.ContactGroupsProvider;
 import pl.dmichalski.contacts.ui.contact_registration.model.ContactTableModel;
 import pl.dmichalski.contacts.ui.contact_registration.view.RegistrationFrame;
+import pl.dmichalski.contacts.ui.contact_registration.view.contact_data.ContactRegisterLeftPanel;
 import pl.dmichalski.contacts.ui.contact_registration.view.contact_data.DataButtonPanel;
 import pl.dmichalski.contacts.ui.contact_registration.view.contact_data.FormPanel;
 import pl.dmichalski.contacts.ui.contact_registration.view.contact_table.ContactSearchPanel;
 import pl.dmichalski.contacts.ui.contact_registration.view.contact_table.ContactTablePanel;
+import pl.dmichalski.contacts.ui.show_contact_tree.controller.ViewRefresher;
 import pl.dmichalski.contacts.utils.Const;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -35,16 +36,22 @@ public class RegistrationController {
 
     private ContactTableModel contactTableModel;
 
-    public RegistrationController(RegistrationFrame registrationFrame) {
+    private JComboBox<ContactGroup> groupComboBox;
+
+    private ViewRefresher viewRefresher;
+
+    public RegistrationController(RegistrationFrame registrationFrame, ViewRefresher viewRefresher) {
         this.contactDao = new ContactDao();
+        this.viewRefresher = viewRefresher;
         initializeComponents(registrationFrame);
     }
 
     private void initializeComponents(RegistrationFrame registrationFrame) {
-        DataButtonPanel leftBtnPanel = registrationFrame.getContactRegisterLeftPanel().getButtonPanel();
-        leftFormPanel = registrationFrame.getContactRegisterLeftPanel().getFormPanel();
+        ContactRegisterLeftPanel contactRegisterLeftPanel = registrationFrame.getContactRegisterLeftPanel();
+        DataButtonPanel leftBtnPanel = contactRegisterLeftPanel.getButtonPanel();
         ContactTablePanel contactTablePanel = registrationFrame.getContactTablePanel();
         ContactSearchPanel searchRightPanel = contactTablePanel.getContactSearchPanel();
+        leftFormPanel = contactRegisterLeftPanel.getFormPanel();
 
         JButton saveBtn = leftBtnPanel.getSaveBtn();
         JButton clearBtn = leftBtnPanel.getCancelBtn();
@@ -54,6 +61,7 @@ public class RegistrationController {
         this.searchTF = searchRightPanel.getSearchTF();
         this.contactTable = contactTablePanel.getContactTable();
         this.contactTableModel = (ContactTableModel) contactTable.getModel();
+        this.groupComboBox = contactRegisterLeftPanel.getFormPanel().getGroupComboBox();
 
         saveBtn.addActionListener(new OnSaveClickListener());
         clearBtn.addActionListener(new OnClearClickListener());
@@ -61,6 +69,26 @@ public class RegistrationController {
         deleteBtn.addActionListener(new OnDeleteClickListener());
         contactTable.getSelectionModel().addListSelectionListener(new OnContactRowClickListener());
         registrationFrame.addWindowListener(new OnWindowCloseListener());
+
+        initGroupComboBox();
+        initContactsInTable();
+    }
+
+    private void initGroupComboBox() {
+        ContactGroupsProvider contactGroupsProvider = ContactGroupsProvider.getInstance();
+        List<ContactGroup> groups = contactGroupsProvider.getGroups();
+        for (ContactGroup group : groups) {
+            groupComboBox.addItem(group);
+        }
+    }
+
+    private void initContactsInTable() {
+        ContactGroupsProvider contactGroupsProvider = ContactGroupsProvider.getInstance();
+        List<ContactGroup> groups = contactGroupsProvider.getGroups();
+        for (ContactGroup group : groups) {
+            List<Contact> contacts = group.getContacts();
+            contactTableModel.addContacts(contacts);
+        }
     }
 
     class OnSaveClickListener implements ActionListener {
@@ -155,42 +183,18 @@ public class RegistrationController {
 
         @Override
         public void windowClosing(WindowEvent event) {
-            UIManager.put("OptionPane.yesButtonText", "Tak");
-            UIManager.put("OptionPane.noButtonText", "Nie");
+            ContactGroupsProvider contactGroupsProvider = ContactGroupsProvider.getInstance();
+            contactGroupsProvider.clearInGroups();
+            List<Contact> contacts = contactTableModel.getContacts();
 
-            int confirm = JOptionPane.showConfirmDialog(
-                    null,
-                    Const.Strings.SAVE_CONFIRMATION,
-                    Const.Strings.INFORMATION,
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            if (confirm == JOptionPane.YES_OPTION) {
-                saveChanges();
+            for (Contact contact : contacts) {
+                String groupName = contact.getGroupName();
+                ContactGroup groupByName = contactGroupsProvider.getGroupByName(groupName);
+                groupByName.addContact(contact);
             }
+            viewRefresher.refreshView();
         }
 
-        private void saveChanges() {
-            try {
-                JFileChooser fileChooser = new JFileChooser();
-                FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("Xml files (*.xml)", "xml");
-                fileChooser.setFileFilter(xmlFilter);
-                int result = fileChooser.showSaveDialog(null);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    String pathToFile = fileChooser.getSelectedFile().getAbsolutePath() + ".xml";
-                    Path selectedFile = Paths.get(pathToFile);
-                    List<Contact> contacts = contactTableModel.getContacts();
-//                    contactDao.saveAllContacts(contacts, selectedFile);
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        Const.Strings.FILE_WRITE_ERROR + e.getMessage(),
-                        Const.Strings.ERROR,
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-        }
     }
 
     private class OnContactRowClickListener implements ListSelectionListener {
@@ -202,7 +206,6 @@ public class RegistrationController {
                 Contact contact = contactTableModel.getContactByRow(rowIndex);
                 leftFormPanel.fillForm(contact);
             }
-
         }
 
     }

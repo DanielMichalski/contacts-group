@@ -5,16 +5,14 @@ public class Const {
     public static interface TitleFramesAndDlgs {
         String CONTACT_REGISTRATION_FRAME = "Zarządzanie kontaktami";
         String SHOW_CONTACT_FRAME = "Kontakty";
-        String GROUP_FRAME = "Dodaj grupę";
     }
 
     public static interface ButtonLbls {
         String BTN_SAVE = "Zapisz";
         String BTN_CANCEL = "Wyczyść";
         String BTN_DELETE = "Usuń";
-        String BTN_CONTACTS = "Kontakty";
-        String BTN_GROUPS = "Grupy";
-        String BTN_ADD = "Dodaj";
+        String BTN_CONTACTS = "Zarządzanie kontaktami";
+        String BTN_GROUP_ADD = "Dodaj grupę";
     }
 
     public static interface Labels {
@@ -29,7 +27,7 @@ public class Const {
         String NAME_AND_SURNAME = "Imię i nazwisko";
         String FIND = "Szukaj";
         String CONTACTS = "Kontakty";
-        String DEFAULT_CONTACT_GROUP = "Pozostałe";
+        String DEFAULT_CONTACT_GROUP = "Bez grupy";
         String GROUP = "Nazwa grupy";
     }
 
@@ -59,6 +57,7 @@ public class Const {
         String NAME_AND_SURNAME = "Imię i nazwisko";
         String PHONE_NUMBER = "Numer telefonu";
         String TYPE = "Typ";
-        String ADDRESS = "Adres";
+        String ADDRESS = "Adres / Nazwa firmy";
+        String GROUP_NAME = "Nazwa grupy";
     }
 }

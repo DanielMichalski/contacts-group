@@ -1,5 +1,7 @@
 package pl.dmichalski.contacts.model;
 
+import pl.dmichalski.contacts.utils.Const;
+
 /**
  * Author: Daniel
  */
@@ -15,14 +17,17 @@ public abstract class Contact {
 
     private String address;
 
+    private String groupName;
+
     public Contact() {
     }
 
-    public Contact(String name, String surname, String phoneNumber, String address) {
+    public Contact(String name, String surname, String phoneNumber, String address, String groupName) {
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.groupName = groupName;
     }
 
     public int getId() {
@@ -67,6 +72,14 @@ public abstract class Contact {
 
     public abstract ContactType getContactType();
 
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
     @Override
     public String toString() {
         return "Contact{" +
@@ -75,7 +88,7 @@ public abstract class Contact {
                 ", surname='" + surname + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
+                ", groupName='" + groupName + '\'' +
                 '}';
     }
-
 }

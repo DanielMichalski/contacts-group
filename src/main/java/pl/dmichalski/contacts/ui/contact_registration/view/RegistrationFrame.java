@@ -17,7 +17,7 @@ public class RegistrationFrame extends JDialog {
 
     public static final int DEFAULT_WIDTH = 950;
 
-    public static final int DEFAULT_HEIGHT = 340;
+    public static final int DEFAULT_HEIGHT = 380;
 
     public RegistrationFrame() {
         setUpFrame();

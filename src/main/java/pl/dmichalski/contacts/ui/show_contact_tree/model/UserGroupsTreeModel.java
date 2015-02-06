@@ -65,7 +65,8 @@ public class UserGroupsTreeModel implements TreeModel {
     }
 
     public void clear() {
-        group.clear();
+        group = null;
+        group = new ArrayList<>();
         this.fireTreeStructureChanged();
     }
 

@@ -6,9 +6,8 @@ import pl.dmichalski.contacts.provider.ContactGroupsProvider;
 import pl.dmichalski.contacts.ui.contact_registration.controller.RegistrationController;
 import pl.dmichalski.contacts.ui.contact_registration.view.RegistrationFrame;
 import pl.dmichalski.contacts.ui.show_contact_tree.model.UserGroupsTreeModel;
-import pl.dmichalski.contacts.ui.show_contact_tree.view.ContactButtonPanel;
+import pl.dmichalski.contacts.ui.show_contact_tree.view.panel.ContactButtonPanel;
 import pl.dmichalski.contacts.ui.show_contact_tree.view.ContactsFrame;
-import pl.dmichalski.contacts.ui.show_contact_tree.view.GroupRightPanel;
 import pl.dmichalski.contacts.utils.Const;
 
 import javax.swing.*;
@@ -24,7 +23,7 @@ import java.util.List;
 /**
  * Author: Daniel
  */
-public class ShowContactTreeController {
+public class ShowContactTreeController implements ViewRefresher {
 
     private UserGroupsTreeModel treeModel;
 
@@ -32,20 +31,22 @@ public class ShowContactTreeController {
 
     private JTextField groupTF;
 
+    private ContactGroupsProvider contactGroupsProvider;
+
     public ShowContactTreeController(ContactsFrame contactsFrame) {
         this.treeModel = contactsFrame.getContactTreePanel().getModel();
         this.contactDao = new ContactDao();
-        this.groupTF = contactsFrame.getGroupRightPanel().getGroupTF();
+        this.groupTF = contactsFrame.getContactButtonPanel().getGroupTF();
+        contactGroupsProvider = ContactGroupsProvider.getInstance();
 
         ContactButtonPanel contactButtonPanel = contactsFrame.getContactButtonPanel();
-        GroupRightPanel groupRightPanel = contactsFrame.getGroupRightPanel();
-
         contactButtonPanel.getContactManagementBtn().addActionListener(new OnContactManagementBtnClick());
-        groupRightPanel.getAddBtn().addActionListener(new OnAddBtnListener());
+        contactButtonPanel.getAddBtn().addActionListener(new OnAddBtnListener());
 
         contactsFrame.addWindowListener(new OnWindowCloseListener());
 
         readXmlFile();
+        addDefaultContactGroupIfNeeded();
     }
 
     class OnContactManagementBtnClick implements ActionListener {
@@ -53,10 +54,11 @@ public class ShowContactTreeController {
         @Override
         public void actionPerformed(ActionEvent e) {
             RegistrationFrame frame = new RegistrationFrame();
-            new RegistrationController(frame);
+            new RegistrationController(frame, ShowContactTreeController.this);
             frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             frame.setVisible(true);
         }
+
     }
 
     private class OnAddBtnListener implements ActionListener {
@@ -88,8 +90,8 @@ public class ShowContactTreeController {
             }
 
         }
-    }
 
+    }
     private void readXmlFile() {
         UIManager.put("OptionPane.yesButtonText", "Tak");
         UIManager.put("OptionPane.noButtonText", "Nie");
@@ -105,7 +107,6 @@ public class ShowContactTreeController {
             readContacts();
         }
     }
-
     private void readContacts() {
         try {
             JFileChooser fileChooser = new JFileChooser();
@@ -114,9 +115,13 @@ public class ShowContactTreeController {
             int result = fileChooser.showOpenDialog(null);
             if (result == JFileChooser.APPROVE_OPTION) {
                 Path selectedFile = Paths.get(fileChooser.getSelectedFile().toURI());
-//                List<Contact> contacts = contactDao.getAllContacts(selectedFile);
-//                contactTableModel.addContacts(contacts);
+                List<ContactGroup> groups = contactDao.getAllContacts(selectedFile);
+                contactGroupsProvider.addGroups(groups);
+                for (ContactGroup group : groups) {
+                    treeModel.addContactGroup(group);
+                }
             }
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(
                     null,
@@ -167,6 +172,28 @@ public class ShowContactTreeController {
                         JOptionPane.ERROR_MESSAGE
                 );
             }
+        }
+
+    }
+
+    private void addDefaultContactGroupIfNeeded() {
+        for (ContactGroup group : contactGroupsProvider.getGroups()) {
+            if (Const.Labels.DEFAULT_CONTACT_GROUP.equals(group.getName())) {
+                return;
+            }
+        }
+        ContactGroup defaultContactGroup = new ContactGroup();
+        defaultContactGroup.setName(Const.Labels.DEFAULT_CONTACT_GROUP);
+        contactGroupsProvider.addGroup(defaultContactGroup);
+        treeModel.addContactGroup(defaultContactGroup);
+    }
+
+    @Override
+    public synchronized void refreshView() {
+        treeModel.clear();
+        List<ContactGroup> groups = contactGroupsProvider.getGroups();
+        for (ContactGroup group : groups) {
+            treeModel.addContactGroup(group);
         }
     }
 

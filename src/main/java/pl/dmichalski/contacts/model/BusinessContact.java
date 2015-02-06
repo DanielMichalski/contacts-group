@@ -11,8 +11,8 @@ public class BusinessContact extends Contact {
     public BusinessContact() {
     }
 
-    public BusinessContact(String name, String surname, String phoneNumber, String address) {
-        super(name, surname, phoneNumber, address);
+    public BusinessContact(String name, String surname, String phoneNumber, String address, String groupName) {
+        super(name, surname, phoneNumber, address, groupName);
     }
 
     public ContactType getContactType() {

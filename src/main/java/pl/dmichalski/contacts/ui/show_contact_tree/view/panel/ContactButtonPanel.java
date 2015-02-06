@@ -1,4 +1,4 @@
-package pl.dmichalski.contacts.ui.show_contact_tree.view;
+package pl.dmichalski.contacts.ui.show_contact_tree.view.panel;
 
 import pl.dmichalski.contacts.utils.Const;
 
@@ -8,29 +8,30 @@ import java.awt.*;
 /**
  * Author: Daniel
  */
-public class GroupRightPanel extends JPanel {
+public class ContactButtonPanel extends JPanel {
 
     private JTextField groupTF;
 
     private JButton addBtn;
 
-    public static final int WIDTH = 350;
+    private JButton contactManagementBtn;
 
-    public static final int HEIGHT = 80;
-
-    public GroupRightPanel() {
-        initializeComponents();
+    public ContactButtonPanel() {
+        initComponents();
     }
 
-    private void initializeComponents() {
+    private void initComponents() {
+
         JLabel groupLbl = new JLabel(Const.Labels.GROUP);
         groupTF = new JTextField("");
         groupTF.setPreferredSize(new Dimension(120, 25));
-        addBtn = new JButton(Const.ButtonLbls.BTN_ADD);
+        addBtn = new JButton(Const.ButtonLbls.BTN_GROUP_ADD);
+        contactManagementBtn = new JButton(Const.ButtonLbls.BTN_CONTACTS);
 
         add(groupLbl);
         add(groupTF);
         add(addBtn);
+        add(contactManagementBtn);
     }
 
     public JButton getAddBtn() {
@@ -39,6 +40,10 @@ public class GroupRightPanel extends JPanel {
 
     public JTextField getGroupTF() {
         return groupTF;
+    }
+
+    public JButton getContactManagementBtn() {
+        return contactManagementBtn;
     }
 
 }

@@ -1,5 +1,6 @@
 package pl.dmichalski.contacts.model;
 
+
 /**
  * Author: Daniel
  */
@@ -10,8 +11,8 @@ public class PrivateContact extends Contact {
     public PrivateContact() {
     }
 
-    public PrivateContact(String name, String surname, String phoneNumber, String address) {
-        super(name, surname, phoneNumber, address);
+    public PrivateContact(String name, String surname, String phoneNumber, String address, String groupName) {
+        super(name, surname, phoneNumber, address, groupName);
     }
 
     public ContactType getContactType() {

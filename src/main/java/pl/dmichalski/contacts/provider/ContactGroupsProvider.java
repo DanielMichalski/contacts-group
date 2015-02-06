@@ -40,4 +40,28 @@ public class ContactGroupsProvider {
         return groups;
     }
 
+    public void addGroups(List<ContactGroup> groups) {
+        for (ContactGroup group : groups) {
+            this.groups.add(group);
+        }
+    }
+
+    public void clear() {
+        groups = new ArrayList<>();
+    }
+
+    public ContactGroup getGroupByName(String groupName) {
+        for (ContactGroup group : groups) {
+            if (group.getName().equals(groupName)) {
+                return group;
+            }
+        }
+        return null;
+    }
+
+    public void clearInGroups() {
+        for (ContactGroup group : groups) {
+            group.getContacts().clear();
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package pl.dmichalski.contacts.ui.show_contact_tree.view;
 
+import pl.dmichalski.contacts.ui.show_contact_tree.view.panel.ContactButtonPanel;
+import pl.dmichalski.contacts.ui.show_contact_tree.view.panel.ContactTreePanel;
 import pl.dmichalski.contacts.utils.Const;
 import pl.dmichalski.contacts.utils.Utils;
 
@@ -15,9 +17,7 @@ public class ContactsFrame extends JFrame {
 
     private ContactButtonPanel contactButtonPanel;
 
-    private GroupRightPanel groupRightPanel;
-
-    public static final int WIDTH = 500;
+    public static final int WIDTH = 450;
 
     public static final int HEIGHT = 400;
 
@@ -28,6 +28,7 @@ public class ContactsFrame extends JFrame {
 
     private void setFrameUp() {
         Utils.setWindowsLookAndFeel();
+        setResizable(false);
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setTitle(Const.TitleFramesAndDlgs.SHOW_CONTACT_FRAME);
@@ -36,11 +37,9 @@ public class ContactsFrame extends JFrame {
     private void initializeComponents() {
         contactTreePanel = new ContactTreePanel();
         contactButtonPanel = new ContactButtonPanel();
-        groupRightPanel = new GroupRightPanel();
 
         add(contactTreePanel, BorderLayout.CENTER);
         add(contactButtonPanel, BorderLayout.SOUTH);
-        add(groupRightPanel, BorderLayout.EAST);
     }
 
     public ContactTreePanel getContactTreePanel() {
@@ -51,7 +50,4 @@ public class ContactsFrame extends JFrame {
         return contactButtonPanel;
     }
 
-    public GroupRightPanel getGroupRightPanel() {
-        return groupRightPanel;
-    }
 }
