@@ -2,6 +2,7 @@ package pl.dmichalski.contacts.ui.contact_registration.model;
 
 
 import pl.dmichalski.contacts.model.Contact;
+import pl.dmichalski.contacts.model.ContactType;
 import pl.dmichalski.contacts.utils.Const;
 
 import javax.swing.table.AbstractTableModel;
@@ -24,6 +25,8 @@ public class ContactTableModel extends AbstractTableModel {
 
     private List<Contact> filteredContacts;
 
+    private ContactType selectedContactType;
+
     @Override
     public String getColumnName(int column) {
         return columnNames[column];
@@ -31,6 +34,7 @@ public class ContactTableModel extends AbstractTableModel {
 
     public ContactTableModel(List<Contact> contacts) {
         super();
+        this.selectedContactType = null;
         if (contacts != null) {
             this.contacts = contacts;
             this.filteredContacts = new ArrayList<>();
@@ -120,16 +124,36 @@ public class ContactTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public void refilter(String name, String surname) {
+    public void refilter(String surname, String address) {
         filteredContacts.clear();
 
-        for (Contact contact : contacts) {
-            if (contact.getName().toLowerCase().contains(name.toLowerCase())
-                    || contact.getSurname().toLowerCase().contains(surname.toLowerCase()))
+        refilterByType();
+        List<Contact> contactsFilteredByType = new ArrayList<>(filteredContacts);
+        filteredContacts.clear();
+
+        for (Contact contact : contactsFilteredByType) {
+            if (contact.getSurname().contains(surname)
+                    && contact.getAddress().contains(address))
                 filteredContacts.add(contact);
         }
 
         fireTableDataChanged();
+    }
+
+    private void refilterByType() {
+        filteredContacts.clear();
+        filterContactsByType(selectedContactType);
+    }
+
+    private void filterContactsByType(ContactType contactType) {
+        if (contactType == null) {
+            refilter();
+        }
+        for (Contact contact : contacts) {
+            if (contact.getContactType() == contactType) {
+                filteredContacts.add(contact);
+            }
+        }
     }
 
     public void resetFilter() {
@@ -142,4 +166,7 @@ public class ContactTableModel extends AbstractTableModel {
         return contacts;
     }
 
+    public void setSelectedContactType(ContactType selectedContactType) {
+        this.selectedContactType = selectedContactType;
+    }
 }

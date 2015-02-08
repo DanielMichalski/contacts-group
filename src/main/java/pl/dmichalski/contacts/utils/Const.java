@@ -13,6 +13,9 @@ public class Const {
         String BTN_DELETE = "Usuń";
         String BTN_CONTACTS = "Zarządzanie kontaktami";
         String BTN_GROUP_ADD = "Dodaj grupę";
+        String ALL_CONTACTS = "Wszystkie";
+        String PRIVATE_CONTACTS = "Prywatne";
+        String BUSINESS_CONTACTS = "Biznesowe";
     }
 
     public static interface Labels {

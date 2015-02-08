@@ -3,6 +3,7 @@ package pl.dmichalski.contacts.ui.contact_registration.controller;
 import pl.dmichalski.contacts.dao.ContactDao;
 import pl.dmichalski.contacts.model.Contact;
 import pl.dmichalski.contacts.model.ContactGroup;
+import pl.dmichalski.contacts.model.ContactType;
 import pl.dmichalski.contacts.provider.ContactGroupsProvider;
 import pl.dmichalski.contacts.ui.contact_registration.model.ContactTableModel;
 import pl.dmichalski.contacts.ui.contact_registration.view.RegistrationFrame;
@@ -27,7 +28,9 @@ public class RegistrationController {
 
     private ContactDao contactDao;
 
-    private JTextField searchTF;
+    private JTextField searchSurnameTF;
+
+    private JTextField searchAddressTF;
 
     private JTable contactTable;
 
@@ -53,8 +56,12 @@ public class RegistrationController {
         JButton saveBtn = leftBtnPanel.getSaveBtn();
         JButton clearBtn = leftBtnPanel.getCancelBtn();
         JButton deleteBtn = contactTablePanel.getBtnPanel().getDeleteContactBtn();
+        JRadioButton allContactsRadioBtn = searchRightPanel.getAllContactsRadioBtn();
+        JRadioButton privateContactsRadioBtn = searchRightPanel.getPrivateContactsRadioBtn();
+        JRadioButton businessContactsRadioBtn = searchRightPanel.getBusinessContactsRadioBtn();
 
-        this.searchTF = searchRightPanel.getSearchTF();
+        this.searchSurnameTF = searchRightPanel.getSearchSurnameTF();
+        this.searchAddressTF = searchRightPanel.getSearchAddressTF();
         this.contactTable = contactTablePanel.getContactTable();
         this.contactTableModel = (ContactTableModel) contactTable.getModel();
         this.groupComboBox = contactRegisterLeftPanel.getFormPanel().getGroupComboBox();
@@ -62,9 +69,13 @@ public class RegistrationController {
         saveBtn.addActionListener(new OnSaveClickListener());
         clearBtn.addActionListener(new OnClearClickListener());
         deleteBtn.addActionListener(new OnDeleteClickListener());
+        allContactsRadioBtn.addActionListener(new ContactTypeRadioButtonListener());
+        privateContactsRadioBtn.addActionListener(new ContactTypeRadioButtonListener());
+        businessContactsRadioBtn.addActionListener(new ContactTypeRadioButtonListener());
         contactTable.getSelectionModel().addListSelectionListener(new OnContactRowClickListener());
         registrationFrame.addWindowListener(new OnWindowCloseListener());
-        searchTF.addKeyListener(new OnEnterTypedInTextFieldListener());
+        searchSurnameTF.addKeyListener(new OnEnterTypedInTextFieldListener());
+        searchAddressTF.addKeyListener(new OnEnterTypedInTextFieldListener());
 
         initGroupComboBox();
         initContactsInTable();
@@ -188,24 +199,27 @@ public class RegistrationController {
     }
 
     private void searchContacts() {
-        String text = searchTF.getText().replaceAll("[*]", "");
-        StringTokenizer tokenizer = new StringTokenizer(text);
-        if (text.equals("")) {
-            contactTableModel.resetFilter();
-            contactTableModel.sortContacts();
-        } else if (tokenizer.countTokens() == 1) {
-            String token = tokenizer.nextToken();
-            contactTableModel.refilter(token, token);
-        } else if (tokenizer.countTokens() == 2) {
-            String name = tokenizer.nextToken();
-            String surname = tokenizer.nextToken();
-            contactTableModel.refilter(name, surname);
-        } else {
-            JOptionPane.showMessageDialog(
-                    null,
-                    Const.Strings.NAME_REQUIRED,
-                    Const.Strings.INFORMATION,
-                    JOptionPane.INFORMATION_MESSAGE);
+        String surname = searchSurnameTF.getText().replaceAll("[*]", "");
+        String address = searchAddressTF.getText().replaceAll("[*]", "");
+        contactTableModel.refilter(surname, address);
+    }
+
+    private class ContactTypeRadioButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            switch (e.getActionCommand()) {
+                case Const.ButtonLbls.ALL_CONTACTS:
+                    contactTableModel.setSelectedContactType(null);
+                    break;
+                case Const.ButtonLbls.PRIVATE_CONTACTS:
+                    contactTableModel.setSelectedContactType(ContactType.PRIVATE);
+                    break;
+                case Const.ButtonLbls.BUSINESS_CONTACTS:
+                    contactTableModel.setSelectedContactType(ContactType.BUSINESS);
+                    break;
+            }
+
+            searchContacts();
         }
     }
 

@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class ShowContactTreeController implements ViewRefresher {
 
+    public static final String XML_FILE_EXTENSION = ".xml";
+
     private UserGroupsTreeModel treeModel;
 
     private ContactDao contactDao;
@@ -158,8 +160,11 @@ public class ShowContactTreeController implements ViewRefresher {
                 fileChooser.setFileFilter(xmlFilter);
                 int result = fileChooser.showSaveDialog(null);
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    String pathToFile = fileChooser.getSelectedFile().getAbsolutePath() + ".xml";
-                    Path selectedFile = Paths.get(pathToFile);
+                    String absolutePathToFile = fileChooser.getSelectedFile().getAbsolutePath();
+                    if (!absolutePathToFile.endsWith(XML_FILE_EXTENSION)) {
+                        absolutePathToFile += XML_FILE_EXTENSION;
+                    }
+                    Path selectedFile = Paths.get(absolutePathToFile);
                     ContactGroupsProvider contactGroupsProvider = ContactGroupsProvider.getInstance();
                     List<ContactGroup> contactGroups = contactGroupsProvider.getGroups();
                     contactDao.saveAllContacts(contactGroups, selectedFile);
